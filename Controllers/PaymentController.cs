@@ -136,7 +136,7 @@ namespace VirocGanpati.Controllers
                         Status = "Active"
                     };
                     userDto = await _userService.AddUserAsync(addUserDto);
-                    User user = await _userService.ValidateUserAsync(payment.Email, request.Password);
+                    User user = await _userService.ValidateUserAsync(payment.Mobile, request.Password);
 
                     token = JwtTokenHelper.GenerateJwtToken(user, _config);
                 }

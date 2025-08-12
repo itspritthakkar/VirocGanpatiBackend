@@ -17,9 +17,9 @@ namespace VirocGanpati.Services
             _mapper = mapper;
         }
 
-        public async Task<User> ValidateUserAsync(string email, string password)
+        public async Task<User> ValidateUserAsync(string mobile, string password)
         {
-            var user = await _userRepository.GetUserByEmailAsync(email);
+            var user = await _userRepository.GetUserByMobileAsync(mobile);
 
             if (user == null || !VerifyPassword(user.Password, password))
             {
@@ -59,11 +59,11 @@ namespace VirocGanpati.Services
 
         public async Task<UserDto> AddUserAsync(AddUserDto userDto)
         {
-            // Check if a user with the same email or name already exists
+            // Check if a user with the same mobile or name already exists
             bool userExists = await _userRepository.UserExistsAsync(userDto.Email);
             if (userExists)
             {
-                throw new Exception("A user with the same email or name already exists.");
+                throw new Exception("A user with the same mobile or name already exists.");
             }
 
             _ = Enum.TryParse(userDto.Status, out ActiveInactiveStatus statusEnum);
@@ -157,6 +157,11 @@ namespace VirocGanpati.Services
         public async Task<bool> CheckIfMobileExists(string mobile)
         {
             return await _userRepository.CheckIfMobileExists(mobile);
+        }
+
+        public async Task MarkOtpVerified(string mobile, bool status)
+        {
+            await _userRepository.MarkOtpVerified(mobile, status);
         }
     }
 }

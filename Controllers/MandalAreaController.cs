@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VirocGanpati.DTOs.MandalAreas;
 using VirocGanpati.Services;
 
@@ -33,6 +34,7 @@ namespace VirocGanpati.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "ManagerPolicy")]
         public async Task<IActionResult> Create([FromBody] CreateMandalAreaDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -42,6 +44,7 @@ namespace VirocGanpati.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "ManagerPolicy")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateMandalAreaDto dto)
         {
             if (id != dto.AreaId) return BadRequest("ID mismatch");
@@ -53,6 +56,7 @@ namespace VirocGanpati.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "ManagerPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _service.DeleteAsync(id);

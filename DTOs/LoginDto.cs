@@ -5,8 +5,8 @@ namespace VirocGanpati.DTOs
     public class LoginDto
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        [RegularExpression(@"^(?:\+91|0)?[6-9]\d{9}$", ErrorMessage = "Invalid mobile number format.")]
+        public string Mobile { get; set; }
 
         [Required]
         public string Password { get; set; }

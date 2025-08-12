@@ -15,5 +15,6 @@ namespace VirocGanpati.Services
         Task DeleteUserAsync(int id);
         Task<bool> CheckIfEmailExists(string email);
         Task<bool> CheckIfMobileExists(string mobile);
+        Task MarkOtpVerified(string mobile, bool status);
     }
 }

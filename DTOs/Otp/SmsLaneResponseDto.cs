@@ -4,6 +4,6 @@
     {
         public int ErrorCode { get; set; }
         public string ErrorDescription { get; set; }
-        public string Data { get; set; }
+        public object Data { get; set; }
     }
 }

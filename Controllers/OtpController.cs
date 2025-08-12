@@ -31,7 +31,7 @@ namespace VirocGanpati.Controllers
 
                 UserDto userdto = await _userService.GetUserByIdAsync(userId);
 
-                var otp = await _otpService.SendOtpAsync(userdto.Mobile, request.Purpose, 4);
+                var otp = await _otpService.SendOtpAsync(userdto.Mobile, request.Purpose, 4, userdto.FirstName);
                 return Ok(new SendOtpResponseDto
                 {
                     Message = "OTP sent successfully",
@@ -61,7 +61,7 @@ namespace VirocGanpati.Controllers
 
                 UserDto userdto = await _userService.GetUserByIdAsync(userId);
 
-                var otp = await _otpService.SendOtpAsync(userdto.Mobile, request.Purpose, 4);
+                var otp = await _otpService.ResendOtpAsync(userdto.Mobile, request.Purpose, 4, userdto.FirstName);
                 return Ok(new SendOtpResponseDto
                 {
                     Message = "OTP sent successfully",
@@ -90,11 +90,15 @@ namespace VirocGanpati.Controllers
 
                 var success = await _otpService.VerifyOtpAsync(userdto.Mobile, request.OtpCode, request.Purpose);
                 if (!success)
+                {
                     return BadRequest(new VerifyOtpResponseDto
                     {
                         Message = "Invalid or expired OTP",
                         IsVerified = false
                     });
+                }
+
+                await _userService.MarkOtpVerified(userdto.Mobile, true);
 
                 return Ok(new VerifyOtpResponseDto
                 {

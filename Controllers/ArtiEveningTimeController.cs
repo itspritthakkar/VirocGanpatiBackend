@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VirocGanpati.DTOs.ArtiEveningTime;
 using VirocGanpati.Services;
 
@@ -31,6 +32,7 @@ namespace VirocGanpati.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "ManagerPolicy")]
         public async Task<IActionResult> Create([FromBody] CreateArtiEveningTimeDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -39,6 +41,7 @@ namespace VirocGanpati.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "ManagerPolicy")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateArtiEveningTimeDto dto)
         {
             if (id != dto.ArtiEveningTimeId) return BadRequest("ID mismatch");
@@ -50,6 +53,7 @@ namespace VirocGanpati.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "ManagerPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _service.DeleteAsync(id);

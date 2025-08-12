@@ -65,12 +65,20 @@ namespace VirocGanpati.Repositories
                 .FirstOrDefaultAsync(u => u.UserId == id && !u.IsDeleted);
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _context.Users
                 .Include(u => u.Role)
                 .Include(u => u.Mandal)
                 .FirstOrDefaultAsync(u => u.Email == email && !u.IsDeleted);
+        }
+
+        public async Task<User?> GetUserByMobileAsync(string mobile)
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Mandal)
+                .FirstOrDefaultAsync(u => u.Mobile == mobile && !u.IsDeleted);
         }
 
         public async Task<Mandal?> GetUserProjectAsync(int userId)
@@ -135,7 +143,7 @@ namespace VirocGanpati.Repositories
                 case "name":
                     query = sortOrder.ToLower() == "asc" ? query.OrderBy(w => w.FirstName) : query.OrderByDescending(w => w.FirstName);
                     break;
-                case "email":
+                case "mobile":
                     query = sortOrder.ToLower() == "asc" ? query.OrderBy(w => w.Email) : query.OrderByDescending(w => w.Email);
                     break;
                 case "role":
@@ -167,7 +175,7 @@ namespace VirocGanpati.Repositories
 
         public async Task<bool> CheckIfMobileExists(string mobile)
         {
-            User? user = await _context.Users.Where(u => u.Email == mobile).FirstOrDefaultAsync();
+            User? user = await _context.Users.Where(u => u.Mobile == mobile).FirstOrDefaultAsync();
 
             if (user == null)
             {
@@ -176,6 +184,17 @@ namespace VirocGanpati.Repositories
             else
             {
                 return true;
+            }
+        }
+
+        public async Task MarkOtpVerified(string mobile, bool status)
+        {
+            User? user = await _context.Users.Where(u => u.Mobile == mobile).FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                user.IsMobileVerified = status;
+                await UpdateUserAsync(user);
             }
         }
     }

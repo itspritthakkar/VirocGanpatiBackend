@@ -18,7 +18,7 @@ namespace VirocGanpati.Services
             _otpRepository = otpRepository;
         }
 
-        public async Task<OtpMessage> SendOtpAsync(string mobile, string purpose, int otpSize)
+        public async Task<OtpMessage> SendOtpAsync(string mobile, string purpose, int otpSize, string firstName)
         {
             var existingOtp = await _otpRepository.GetActiveOtpAsync(mobile, purpose);
             if (existingOtp != null && existingOtp.ExpiryAt > DateTime.UtcNow)
@@ -26,10 +26,10 @@ namespace VirocGanpati.Services
                 throw new OtpAlreadyExistsException("At OTP already exists");
             }
 
-            return await CreateAndSendOtpAsync(mobile, purpose, otpSize);
+            return await CreateAndSendOtpAsync(mobile, purpose, otpSize, firstName);
         }
 
-        public async Task<OtpMessage> ResendOtpAsync(string mobile, string purpose, int otpSize)
+        public async Task<OtpMessage> ResendOtpAsync(string mobile, string purpose, int otpSize, string firstName)
         {
             var existingOtp = await _otpRepository.GetActiveOtpAsync(mobile, purpose);
             if (existingOtp != null)
@@ -38,10 +38,10 @@ namespace VirocGanpati.Services
                 await _otpRepository.UpdateOtpAsync(existingOtp);
             }
 
-            return await CreateAndSendOtpAsync(mobile, purpose, otpSize);
+            return await CreateAndSendOtpAsync(mobile, purpose, otpSize, firstName);
         }
 
-        private async Task<OtpMessage> CreateAndSendOtpAsync(string mobile, string purpose, int otpSize)
+        private async Task<OtpMessage> CreateAndSendOtpAsync(string mobile, string purpose, int otpSize, string firstName)
         {
             // Generate OTP
             string otpCode = GenerateOtp(otpSize);
@@ -52,12 +52,10 @@ namespace VirocGanpati.Services
                 APIKey = _config["SMSLane:ApiKey"],
                 ClientId = _config["SMSLane:ClientId"],
                 SenderId = _config["SMSLane:SenderId"],
-                Is_Unicode = false,
+                Is_Unicode = true,
                 Is_Flash = false,
-                SchedTime = "",
-                GroupId = "",
-                Message = $"Your OTP for {purpose} is {otpCode}. Valid for 5 minutes.",
-                MobileNumbers = mobile
+                Message = $"Namaste, {firstName}, your India થી ભારત 2025 (VIROC Ganesh Utsav Competition) registration is successful. Your code is {otpCode}.",
+                MobileNumbers = $"91{mobile}"
             };
 
             // Call SMS API

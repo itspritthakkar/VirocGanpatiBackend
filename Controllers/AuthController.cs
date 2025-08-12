@@ -28,7 +28,7 @@ namespace VirocGanpati.Controllers
         {
             try
             {
-                var user = await _userService.ValidateUserAsync(loginDto.Email, loginDto.Password);
+                var user = await _userService.ValidateUserAsync(loginDto.Mobile, loginDto.Password);
 
                 var token = JwtTokenHelper.GenerateJwtToken(user, _config);
                 UserDto userDto = _mapper.Map<UserDto>(user);
